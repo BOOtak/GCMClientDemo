@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,11 +30,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class MainActivity extends Activity {
-    private static final String UUID = "8457bf43-81c8-44b1-8ba5-c85575a1a4c8";
     public static final String TAG = "GcmDemo";
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -54,6 +57,19 @@ public class MainActivity extends Activity {
     String regid;
 
     TextView messageTextView;
+
+    private String getUuid() {
+        TelephonyManager manager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        UUID uuid;
+        try {
+            uuid = UUID.nameUUIDFromBytes(manager.getDeviceId().getBytes("utf8"));
+            Log.d(TAG, "Generated uuid " + uuid.toString());
+        } catch (UnsupportedEncodingException e) {
+            uuid = UUID.randomUUID();
+            Log.d(TAG, "Generated random uuid " + uuid.toString());
+        }
+        return uuid.toString();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,9 +248,10 @@ public class MainActivity extends Activity {
             HttpPost httpPost = new HttpPost(uri);
 
             String json = new JSONObject()
-                    .accumulate("uuid", UUID)
+                    .accumulate("uuid", getUuid())
                     .accumulate("app_id", SENDER_ID)
                     .accumulate("registration_id", regid)
+                    .accumulate("name", Build.MODEL)
                     .toString();
 
             StringEntity se = new StringEntity(json);

@@ -12,6 +12,7 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="catinthedark.org.gcmtest.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
