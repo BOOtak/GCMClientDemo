@@ -71,7 +71,6 @@ public class GcmIntentService extends IntentService {
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // Post notification of received message.
                 sendNotification("Received: " + msgBuilder.toString());
-                Log.i(MainActivity.TAG, "Received: " + msgBuilder.toString());
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -82,14 +81,16 @@ public class GcmIntentService extends IntentService {
     // This is just one simple example of what you might choose to do with
     // a GCM message.
     private void sendNotification(String msg) {
+        Log.i(MainActivity.TAG, "Received: " + msg);
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent intent = new Intent(this, MainActivity.class);
+        intent.removeExtra(MainActivity.NOTIFICATION);
         intent.putExtra(MainActivity.NOTIFICATION, msg);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, 0);
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

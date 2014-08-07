@@ -1,6 +1,7 @@
 package catinthedark.org.gcmtest;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,6 +35,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import catinthedark.org.gcmtest.service.GcmIntentService;
 
 
 public class MainActivity extends Activity {
@@ -80,14 +83,6 @@ public class MainActivity extends Activity {
 
         messageTextView = (TextView) findViewById(R.id.textView);
 
-        Intent intent = getIntent();
-        if (intent.hasExtra(NOTIFICATION)) {
-            TextView notificationTV = (TextView) findViewById(R.id.notificationTextView);
-            String notification = intent.getStringExtra(NOTIFICATION);
-            Log.d(TAG, "Notification text: " + notification);
-            notificationTV.setText(notification);
-        }
-
         context = getApplicationContext();
         if (checkPlayServices()) {
             messageTextView.setText("Valid Play Services APK fonud");
@@ -105,6 +100,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        Intent intent = getIntent();
+        if (intent.hasExtra(NOTIFICATION)) {
+            TextView notificationTV = (TextView) findViewById(R.id.notificationTextView);
+            String notification = intent.getStringExtra(NOTIFICATION);
+            Log.d(TAG, "Notification text: " + notification);
+            notificationTV.setText(notification);
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(GcmIntentService.NOTIFICATION_ID);
+        }
         checkPlayServices();
     }
 
