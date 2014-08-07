@@ -5,5 +5,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="text">New Text</string>
+    <string name="notification_text">Notification here</string>
 
 </resources>

@@ -2,6 +2,7 @@ package catinthedark.org.gcmtest;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -42,6 +43,7 @@ public class MainActivity extends Activity {
     public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
+    public static final String NOTIFICATION = "notification";
 
     /**
      * Substitute you own sender ID here. This is the project number you got
@@ -77,6 +79,15 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         messageTextView = (TextView) findViewById(R.id.textView);
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(NOTIFICATION)) {
+            TextView notificationTV = (TextView) findViewById(R.id.notificationTextView);
+            String notification = intent.getStringExtra(NOTIFICATION);
+            Log.d(TAG, "Notification text: " + notification);
+            notificationTV.setText(notification);
+        }
+
         context = getApplicationContext();
         if (checkPlayServices()) {
             messageTextView.setText("Valid Play Services APK fonud");
